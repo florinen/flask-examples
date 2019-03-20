@@ -1,0 +1,18 @@
+node{
+    properties([parameters([string(defaultValue: '127.0.0.1', description: 'give ip to build s site', name: 'ip', trim: false)])])
+    stage("Install git"){
+        sh "ssh ec2-user@ip  sudo yum install git -y"
+    }
+    stage("Clone a repo"){
+        git 'https://github.com/farrukh90/flask-examples.git'
+    }
+    stage("Copy files"){
+        sh "scp * ec2-user@ip:/tmp/"
+    }
+    stage("Install requirements"){
+        sh "ssh ec2-user@IP     sudo pip install -r /tmp/requirements.txt"
+    }
+    stage("Run App"){
+        sh "ssh ec2-user@IP  python /tmp/01-hello-world/hello.py"
+    }
+}
